@@ -29,9 +29,6 @@ export default function Sidebar({ role = 'manager', activePath }) {
   return (
     <aside className="w-60 bg-white border-r border-gray-200 fixed top-16 bottom-0 left-0 z-20 transition-transform duration-300 overflow-y-auto">
       <nav className="py-4">
-        <div className="px-4 mb-6">
-          <span className="font-['Pacifico'] text-2xl text-primary">logo</span>
-        </div>
         <ul>
           {items.map(item => (
             <li key={item.to}>
