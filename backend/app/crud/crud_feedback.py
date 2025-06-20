@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from ..models.feedback import Feedback, SentimentEnum
-from ..schemas.feedback import FeedbackCreate, FeedbackUpdate
+from ..models.feedback import Feedback, SentimentEnum, FeedbackRequest, FeedbackRequestStatus, PeerFeedback, FeedbackComment, Tag, Notification
+from ..schemas.feedback import FeedbackCreate, FeedbackUpdate, FeedbackRequestCreate, PeerFeedbackCreate, FeedbackCommentCreate, TagCreate, NotificationCreate
 from typing import List, Optional
 
 def create_feedback(db: Session, manager_id: int, feedback_in: FeedbackCreate) -> Feedback:
@@ -37,3 +37,120 @@ def acknowledge_feedback(db: Session, feedback: Feedback) -> Feedback:
     db.commit()
     db.refresh(feedback)
     return feedback
+
+# Feedback Request CRUD
+
+def create_feedback_request(db: Session, requester_id: int, request_in: FeedbackRequestCreate) -> FeedbackRequest:
+    request = FeedbackRequest(
+        requester_id=requester_id,
+        target_id=request_in.target_id,
+        message=request_in.message,
+    )
+    db.add(request)
+    db.commit()
+    db.refresh(request)
+    return request
+
+def get_feedback_request_by_id(db: Session, request_id: int) -> Optional[FeedbackRequest]:
+    return db.query(FeedbackRequest).filter(FeedbackRequest.id == request_id).first()
+
+def get_feedback_requests_made(db: Session, user_id: int) -> List[FeedbackRequest]:
+    return db.query(FeedbackRequest).filter(FeedbackRequest.requester_id == user_id).order_by(FeedbackRequest.created_at.desc()).all()
+
+def get_feedback_requests_received(db: Session, user_id: int) -> List[FeedbackRequest]:
+    return db.query(FeedbackRequest).filter(FeedbackRequest.target_id == user_id).order_by(FeedbackRequest.created_at.desc()).all()
+
+def update_feedback_request_status(db: Session, request: FeedbackRequest, status: FeedbackRequestStatus) -> FeedbackRequest:
+    request.status = status
+    db.commit()
+    db.refresh(request)
+    return request
+
+# Peer Feedback CRUD
+
+def create_peer_feedback(db: Session, from_user_id: int, feedback_in: PeerFeedbackCreate) -> PeerFeedback:
+    feedback = PeerFeedback(
+        from_user_id=from_user_id,
+        to_user_id=feedback_in.to_user_id,
+        strengths=feedback_in.strengths,
+        areas_to_improve=feedback_in.areas_to_improve,
+        sentiment=feedback_in.sentiment,
+        is_anonymous=feedback_in.is_anonymous,
+    )
+    db.add(feedback)
+    db.commit()
+    db.refresh(feedback)
+    return feedback
+
+def get_peer_feedback_given(db: Session, user_id: int) -> List[PeerFeedback]:
+    return db.query(PeerFeedback).filter(PeerFeedback.from_user_id == user_id).order_by(PeerFeedback.created_at.desc()).all()
+
+def get_peer_feedback_received(db: Session, user_id: int) -> List[PeerFeedback]:
+    return db.query(PeerFeedback).filter(PeerFeedback.to_user_id == user_id).order_by(PeerFeedback.created_at.desc()).all()
+
+# Feedback Comment CRUD
+
+def create_feedback_comment(db: Session, feedback_id: int, user_id: int, comment_in: FeedbackCommentCreate) -> FeedbackComment:
+    comment = FeedbackComment(
+        feedback_id=feedback_id,
+        user_id=user_id,
+        content=comment_in.content,
+    )
+    db.add(comment)
+    db.commit()
+    db.refresh(comment)
+    return comment
+
+def get_feedback_comments(db: Session, feedback_id: int) -> List[FeedbackComment]:
+    return db.query(FeedbackComment).filter(FeedbackComment.feedback_id == feedback_id).order_by(FeedbackComment.created_at.asc()).all()
+
+# Tag CRUD
+
+def create_tag(db: Session, tag_in: TagCreate) -> Tag:
+    tag = Tag(name=tag_in.name)
+    db.add(tag)
+    db.commit()
+    db.refresh(tag)
+    return tag
+
+def get_all_tags(db: Session) -> list[Tag]:
+    return db.query(Tag).all()
+
+def add_tag_to_feedback(db: Session, feedback: Feedback, tag: Tag):
+    if tag not in feedback.tags:
+        feedback.tags.append(tag)
+        db.commit()
+        db.refresh(feedback)
+    return feedback
+
+def remove_tag_from_feedback(db: Session, feedback: Feedback, tag: Tag):
+    if tag in feedback.tags:
+        feedback.tags.remove(tag)
+        db.commit()
+        db.refresh(feedback)
+    return feedback
+
+def get_tags_for_feedback(db: Session, feedback: Feedback) -> list[Tag]:
+    return feedback.tags
+
+# Notification CRUD
+
+def create_notification(db: Session, notification_in: NotificationCreate) -> Notification:
+    notification = Notification(
+        user_id=notification_in.user_id,
+        message=notification_in.message,
+        type=notification_in.type
+    )
+    db.add(notification)
+    db.commit()
+    db.refresh(notification)
+    return notification
+
+def get_notifications_for_user(db: Session, user_id: int) -> list[Notification]:
+    return db.query(Notification).filter(Notification.user_id == user_id).order_by(Notification.created_at.desc()).all()
+
+def mark_notification_as_read(db: Session, notification: Notification) -> Notification:
+    notification.read = True
+    db.commit()
+    db.refresh(notification)
+    return notification
