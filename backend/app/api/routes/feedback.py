@@ -35,9 +35,9 @@ router = APIRouter(prefix="/api/feedback", tags=["feedback"])
 @router.post("/", response_model=FeedbackRead)
 def create_feedback(
     feedback_in: FeedbackCreate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role(UserRole.manager)),
-    background_tasks: BackgroundTasks = Depends()
 ):
     feedback = crud_feedback.create_feedback(db, manager_id=current_user.id, feedback_in=feedback_in)
     # Notify employee (in-app)

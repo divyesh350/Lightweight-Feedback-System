@@ -8,6 +8,17 @@ class SentimentEnum(str, Enum):
     neutral = "neutral"
     negative = "negative"
 
+class TagBase(BaseModel):
+    name: str
+
+class TagCreate(TagBase):
+    pass
+
+class TagRead(TagBase):
+    id: int
+    class Config:
+        from_attributes = True
+
 class FeedbackBase(BaseModel):
     strengths: str
     areas_to_improve: str
@@ -90,13 +101,18 @@ class FeedbackCommentRead(FeedbackCommentBase):
     class Config:
         from_attributes = True
 
-class TagBase(BaseModel):
-    name: str
+class NotificationBase(BaseModel):
+    message: str
+    type: str
 
-class TagCreate(TagBase):
-    pass
+class NotificationCreate(NotificationBase):
+    user_id: int
 
-class TagRead(TagBase):
+class NotificationRead(NotificationBase):
     id: int
+    user_id: int
+    read: bool
+    created_at: datetime
+
     class Config:
         from_attributes = True
