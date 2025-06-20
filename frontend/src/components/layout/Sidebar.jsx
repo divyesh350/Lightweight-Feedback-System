@@ -32,7 +32,7 @@ export default function Sidebar({ role = 'manager', activePath }) {
         <ul>
           {items.map(item => (
             <li key={item.to}>
-              <Link to={item.to} className={`nav-item flex items-center space-x-3 px-4 py-3 text-sm ${location.pathname === item.to ? 'active text-primary' : 'text-gray-700'}`}>
+              <Link to={item.to} className={`nav-item flex items-center space-x-3 px-4 py-3 text-base lg:text-lg ${location.pathname === item.to ? 'active text-primary' : 'text-gray-700'}`}>
                 <div className="w-5 h-5 flex items-center justify-center">
                   <i className={item.icon}></i>
                 </div>

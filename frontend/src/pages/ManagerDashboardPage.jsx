@@ -7,6 +7,7 @@ import SentimentDonutChart from '../components/charts/SentimentDonutChart';
 import FeedbackTrendChart from '../components/charts/FeedbackTrendChart';
 import TeamMemberCard from '../components/team/TeamMemberCard';
 import FeedbackCard from '../components/feedback/FeedbackCard';
+import DashboardHeader from '../components/layout/DashboardHeader';
 
 const mockUser = { name: 'John Smith', role: 'Manager', avatar: '' };
 
@@ -109,6 +110,10 @@ const feedbacks = [
   },
 ];
 
+function getToday() {
+  return new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+
 export default function ManagerDashboardPage() {
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -116,6 +121,12 @@ export default function ManagerDashboardPage() {
       <div className="flex-1 flex flex-col">
         <Topbar user={mockUser} notifications={3} />
         <MainContainer>
+          <DashboardHeader
+            title="Manager Dashboard"
+            date={getToday()}
+            onExport={() => {}}
+            onNewFeedback={() => {}}
+          />
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {stats.map((stat, i) => (
