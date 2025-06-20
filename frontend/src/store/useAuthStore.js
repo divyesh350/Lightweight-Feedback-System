@@ -7,6 +7,8 @@ export const useAuthStore = create(persist((set) => ({
   token: null,
   loading: false,
   error: null,
+  role: null,
+  setRole: (role) => set({ role }),
   login: async (formData) => {
     set({ loading: true, error: null });
     try {
@@ -34,5 +36,5 @@ export const useAuthStore = create(persist((set) => ({
   }
 }), {
   name: 'auth', // storage key
-  partialize: (state) => ({ user: state.user, token: state.token }),
+  partialize: (state) => ({ user: state.user, token: state.token, role: state.role }),
 }));

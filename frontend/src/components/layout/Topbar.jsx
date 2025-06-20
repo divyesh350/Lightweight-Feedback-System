@@ -9,7 +9,7 @@ export default function Topbar({ user, notifications = 0, onRoleSwitch }) {
           <i className="ri-menu-line ri-lg"></i>
         </div>
         <div className="hidden lg:block">
-          <span className="font-['Pacifico'] text-2xl text-primary">logo</span>
+          <span className="font-['Pacifico'] text-2xl text-primary">GrowWise</span>
         </div>
       </div>
       <div className="flex items-center space-x-4">
