@@ -16,7 +16,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
     access_token = security.create_access_token(data={"user_id": user.id, "role": user.role.value})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "role": user.role.value}
 
 @router.post("/register", response_model=UserRead)
 def register(user_in: UserCreate, db: Session = Depends(get_db)):

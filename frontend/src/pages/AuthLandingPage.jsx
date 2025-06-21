@@ -9,7 +9,7 @@ const bgGradient = 'bg-gradient-to-br from-blue-100 via-purple-100 to-teal-100';
 
 const roles = [
   {
-    key: 'Manager',
+    key: 'manager',
     icon: 'ri-user-star-line',
     title: "I'm a Manager",
     desc: 'Access team insights and provide feedback',
@@ -17,7 +17,7 @@ const roles = [
     bg: 'bg-primary/10',
   },
   {
-    key: 'Employee',
+    key: 'employee',
     icon: 'ri-user-line',
     title: "I'm an Employee",
     desc: 'Receive feedback and track your progress',
@@ -28,11 +28,19 @@ const roles = [
 
 export default function AuthLandingPage() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [isLoginMode, setIsLoginMode] = useState(false);
   const setRole = useAuthStore((s) => s.setRole);
   const role = useAuthStore((s) => s.role);
 
   const handleCardClick = (role) => {
-    setRole(role);
+    setSelectedRole(role);
+    setIsLoginMode(false); // This will open registration form
+    setModalOpen(true);
+  };
+
+  const handleLoginClick = () => {
+    setIsLoginMode(true); // This will open login form
     setModalOpen(true);
   };
 
@@ -84,7 +92,12 @@ export default function AuthLandingPage() {
         ))}
       </div>
       {/* Auth Modal */}
-      <AuthModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <AuthModal 
+        open={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        initialRole={selectedRole}
+        initialMode={isLoginMode ? 'login' : 'register'}
+      />
       {/* Bottom Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -93,17 +106,10 @@ export default function AuthLandingPage() {
         className="text-center mt-4"
       >
         <Typography variant="body2" className="text-slate-600">
-          {role === null || role === undefined ? (
-            <>
-              Already have an account?{' '}
-              <button className="text-primary font-medium ml-1 hover:underline" onClick={() => { setRole('Manager'); setModalOpen(true); }}>Log in</button>
-            </>
-          ) : (
-            <>
-              New here?{' '}
-              <button className="text-primary font-medium ml-1 hover:underline" onClick={() => setModalOpen(true)}>Register now</button>
-            </>
-          )}
+          Already have an account?{' '}
+          <button className="text-primary font-medium ml-1 hover:underline" onClick={handleLoginClick}>
+            Login now
+          </button>
         </Typography>
       </motion.div>
     </div>

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import * as authApi from '../api/authApi';
 
-export const useAuthStore = create(persist((set) => ({
+export const useAuthStore = create(persist((set, get) => ({
   user: null,
   token: null,
   loading: false,
@@ -13,18 +13,39 @@ export const useAuthStore = create(persist((set) => ({
     set({ loading: true, error: null });
     try {
       const { data } = await authApi.login(formData);
-      set({ token: data.access_token });
+      const token = data.access_token;
+      localStorage.setItem('access_token', token);
+      set({ 
+        token: token, 
+        role: data.role,
+        loading: false 
+      });
       const me = await authApi.getMe();
-      set({ user: me.data, loading: false });
-      return true;
+      set({ user: me.data });
+      return { success: true, user: me.data, role: data.role };
     } catch (error) {
-      set({ error: error.response?.data?.detail || 'Login failed', loading: false });
-      return false;
+      const errorMessage = error.response?.data?.detail || 'Login failed';
+      set({ error: errorMessage, loading: false });
+      return { success: false, error: errorMessage };
+    }
+  },
+  register: async (formData) => {
+    set({ loading: true, error: null });
+    try {
+      const { data } = await authApi.register(formData);
+      set({ loading: false });
+      return { success: true, user: data };
+    } catch (error) {
+      const errorMessage = error.response?.data?.detail || 'Registration failed';
+      set({ error: errorMessage, loading: false });
+      return { success: false, error: errorMessage };
     }
   },
   logout: () => {
-    set({ user: null, token: null });
+    localStorage.removeItem('access_token');
+    set({ user: null, token: null, role: null, error: null });
   },
+  clearError: () => set({ error: null }),
   fetchMe: async () => {
     set({ loading: true });
     try {
