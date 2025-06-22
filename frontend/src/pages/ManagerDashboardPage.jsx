@@ -10,6 +10,7 @@ import DashboardCharts from '../components/dashboard/DashboardCharts';
 import TeamMembersSection from '../components/team/TeamMembersSection';
 import RecentFeedbackSection from '../components/feedback/RecentFeedbackSection';
 import TeamManagementModal from '../components/modals/TeamManagementModal';
+import FeedbackFormModal from '../components/modals/FeedbackFormModal';
 import { useManagerDashboardStore } from '../store/useManagerDashboardStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useDashboardRefresh } from '../hooks/useDashboardRefresh';
@@ -21,9 +22,8 @@ function getToday() {
 export default function ManagerDashboardPage() {
   const navigate = useNavigate();
   const [teamModalOpen, setTeamModalOpen] = useState(false);
-  const { user } = useAuthStore();
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const {
-    overview,
     sentimentTrends,
     teamMembers,
     recentFeedback,
@@ -80,7 +80,12 @@ export default function ManagerDashboardPage() {
   };
 
   const handleNewFeedback = () => {
-    navigate('/feedback/new');
+    setFeedbackModalOpen(true);
+  };
+
+  const handleFeedbackSuccess = () => {
+    // Refresh dashboard data after successful feedback creation
+    refreshDashboard();
   };
 
   const handleViewAllTeam = () => {
@@ -88,7 +93,7 @@ export default function ManagerDashboardPage() {
   };
 
   const handleViewAllFeedback = () => {
-    navigate('/feedback');
+    navigate('/manager/feedback');
   };
 
   const handleRefresh = () => {
@@ -149,6 +154,13 @@ export default function ManagerDashboardPage() {
       <TeamManagementModal 
         open={teamModalOpen}
         onClose={() => setTeamModalOpen(false)}
+      />
+
+      {/* Feedback Form Modal */}
+      <FeedbackFormModal
+        open={feedbackModalOpen}
+        onClose={() => setFeedbackModalOpen(false)}
+        onSuccess={handleFeedbackSuccess}
       />
     </div>
   );

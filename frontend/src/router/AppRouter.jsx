@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AuthLandingPage from '../pages/AuthLandingPage';
 import ManagerDashboardPage from '../pages/ManagerDashboardPage';
+import ManagerFeedbackPage from '../pages/ManagerFeedbackPage';
 import EmployeeDashboardPage from '../pages/EmployeeDashboardPage';
 
 function NotFoundPage() {
@@ -14,6 +15,7 @@ export default function AppRouter() {
       <Routes>
         <Route path="/" element={<AuthLandingPage />} />
         <Route path="/dashboard/manager" element={<ManagerDashboardPage />} />
+        <Route path="/manager/feedback" element={<ManagerFeedbackPage />} />
         <Route path="/dashboard/employee" element={<EmployeeDashboardPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

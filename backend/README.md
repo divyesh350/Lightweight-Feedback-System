@@ -173,7 +173,11 @@ SMTP_PASSWORD=your_email_password
     - password: password123
   - Response:
     ```json
-    { "access_token": "...", "token_type": "bearer" }
+    { 
+      "access_token": "...", 
+      "token_type": "bearer",
+      "role": "manager"
+    }
     ```
 
 ### Users
@@ -181,6 +185,18 @@ SMTP_PASSWORD=your_email_password
   - Get current user info (Bearer token required)
 - **GET /api/users/team**
   - (Manager only) List direct reports
+- **GET /api/users/available-employees**
+  - (Manager only) List employees not assigned to any manager
+- **POST /api/users/team/add**
+  - (Manager only) Add an employee to the current manager's team
+  - Body:
+    ```json
+    {
+      "employee_id": 2
+    }
+    ```
+- **DELETE /api/users/team/remove/{employee_id}**
+  - (Manager only) Remove an employee from the current manager's team
 
 ### Feedback
 - **POST /api/feedback/**
@@ -198,6 +214,25 @@ SMTP_PASSWORD=your_email_password
   - (Employee only) List feedback received
 - **GET /api/feedback/manager**
   - (Manager only) List feedback given to team
+  - Response:
+    ```json
+    [
+      {
+        "strengths": "Great teamwork",
+        "areas_to_improve": "Time management", 
+        "sentiment": "positive",
+        "id": 4,
+        "manager_id": 3,
+        "employee_id": 4,
+        "created_at": "2025-06-22T06:45:46.236438",
+        "updated_at": "2025-06-22T06:45:46.236438",
+        "acknowledged": false,
+        "tags": [],
+        "employee_name": "divyesh",
+        "employee_email": "divyesh.employee@gmail.com"
+      }
+    ]
+    ```
 - **PATCH /api/feedback/{feedback_id}**
   - (Manager only) Update feedback
 - **POST /api/feedback/{feedback_id}/acknowledge**
@@ -337,6 +372,27 @@ curl -X POST "http://localhost:8000/api/auth/login" \
 }
 ```
 
+### Team Management (as Manager)
+```sh
+# Get team members
+curl -X GET "http://localhost:8000/api/users/team" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+
+# Get available employees
+curl -X GET "http://localhost:8000/api/users/available-employees" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+
+# Add employee to team
+curl -X POST "http://localhost:8000/api/users/team/add" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"employee_id": 3}'
+
+# Remove employee from team
+curl -X DELETE "http://localhost:8000/api/users/team/remove/3" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
 ---
 
 ## 🛠️ Tech Stack
@@ -374,6 +430,7 @@ For questions or issues, open an issue or contact the maintainer.
 - **Feedback History**: A complete history of feedback is available to both managers and employees.
 - **Manager Dashboard**: Overview of team feedback count and sentiment trends over time.
 - **Employee Timeline**: A chronological timeline of all feedback received.
+- **Team Management**: Managers can add/remove employees from their team and view available employees.
 
 ### Bonus Features
 - **Feedback Requests**: Employees can proactively request feedback from their manager or peers.

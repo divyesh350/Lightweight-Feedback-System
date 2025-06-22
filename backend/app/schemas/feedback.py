@@ -45,6 +45,13 @@ class FeedbackRead(FeedbackBase):
     class Config:
         from_attributes = True
 
+class FeedbackReadWithEmployee(FeedbackRead):
+    employee_name: str
+    employee_email: str
+
+    class Config:
+        from_attributes = True
+
 class FeedbackRequestStatus(str, Enum):
     pending = "pending"
     completed = "completed"

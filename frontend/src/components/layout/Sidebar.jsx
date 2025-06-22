@@ -4,16 +4,16 @@ import { Link, useLocation } from 'react-router-dom';
 
 const navItems = {
   manager: [
-    { to: '/dashboard', icon: 'ri-dashboard-line', label: 'Dashboard' },
+    { to: '/dashboard/manager', icon: 'ri-dashboard-line', label: 'Dashboard' },
+    { to: '/manager/feedback', icon: 'ri-feedback-line', label: 'Feedback' },
     { to: '/team', icon: 'ri-team-line', label: 'Team Members' },
-    { to: '/feedback', icon: 'ri-feedback-line', label: 'Feedback' },
     { to: '/analytics', icon: 'ri-bar-chart-line', label: 'Analytics' },
-    { to: '/templates', icon: 'ri-file-list-line', label: 'Templates' },
-    { to: '/schedule', icon: 'ri-calendar-line', label: 'Schedule' },
+    // { to: '/templates', icon: 'ri-file-list-line', label: 'Templates' },
+    // { to: '/schedule', icon: 'ri-calendar-line', label: 'Schedule' },
     { to: '/settings', icon: 'ri-settings-line', label: 'Settings' },
   ],
   employee: [
-    { to: '/dashboard', icon: 'ri-dashboard-line', label: 'Dashboard' },
+    { to: '/dashboard/employee', icon: 'ri-dashboard-line', label: 'Dashboard' },
     { to: '/feedback', icon: 'ri-feedback-line', label: 'My Feedback' },
     { to: '/feedback/requests', icon: 'ri-add-circle-line', label: 'Request Feedback' },
     { to: '/peer-feedback', icon: 'ri-team-line', label: 'Peer Feedback' },

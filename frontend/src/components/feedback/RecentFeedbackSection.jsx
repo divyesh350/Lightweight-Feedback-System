@@ -63,8 +63,8 @@ const RecentFeedbackSection = ({ feedback, loading, onViewAll }) => {
             key={fb.id || i} 
             {...fb}
             avatar={fb.employee?.avatar || ''}
-            name={fb.employee?.name || 'Unknown Employee'}
-            role={fb.employee?.role || 'Employee'}
+            name={fb.employee_name || 'Unknown Employee'}
+            role={fb.role || 'Employee'}
             date={new Date(fb.created_at).toLocaleDateString('en-US', { 
               year: 'numeric', 
               month: 'long', 

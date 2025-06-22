@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from ...api.deps import get_db, get_current_user, require_role
 from ...models.user import User, UserRole
 from ...models.feedback import Feedback
-from ...schemas.feedback import FeedbackCreate, FeedbackRead, FeedbackUpdate, FeedbackRequestCreate, FeedbackRequestRead, FeedbackRequestStatus, PeerFeedbackCreate, PeerFeedbackRead, FeedbackCommentCreate, FeedbackCommentRead, TagCreate, TagRead, NotificationRead, NotificationCreate
+from ...schemas.feedback import FeedbackCreate, FeedbackRead, FeedbackReadWithEmployee, FeedbackUpdate, FeedbackRequestCreate, FeedbackRequestRead, FeedbackRequestStatus, PeerFeedbackCreate, PeerFeedbackRead, FeedbackCommentCreate, FeedbackCommentRead, TagCreate, TagRead, NotificationRead, NotificationCreate
 from ...crud import crud_feedback
 from ...crud.crud_feedback import (
     create_feedback_request,
@@ -65,7 +65,7 @@ def get_my_feedback(
 ):
     return crud_feedback.get_feedback_for_employee(db, employee_id=current_user.id)
 
-@router.get("/manager", response_model=List[FeedbackRead])
+@router.get("/manager", response_model=List[FeedbackReadWithEmployee])
 def get_team_feedback(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role(UserRole.manager))

@@ -1,5 +1,6 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from ..models.feedback import Feedback, SentimentEnum, FeedbackRequest, FeedbackRequestStatus, PeerFeedback, FeedbackComment, Tag, Notification
+from ..models.user import User
 from ..schemas.feedback import FeedbackCreate, FeedbackUpdate, FeedbackRequestCreate, PeerFeedbackCreate, FeedbackCommentCreate, TagCreate, NotificationCreate
 from typing import List, Optional
 
@@ -22,8 +23,32 @@ def get_feedback_by_id(db: Session, feedback_id: int) -> Optional[Feedback]:
 def get_feedback_for_employee(db: Session, employee_id: int) -> List[Feedback]:
     return db.query(Feedback).filter(Feedback.employee_id == employee_id).order_by(Feedback.created_at.desc()).all()
 
-def get_feedback_for_manager(db: Session, manager_id: int) -> List[Feedback]:
-    return db.query(Feedback).filter(Feedback.manager_id == manager_id).order_by(Feedback.created_at.desc()).all()
+def get_feedback_for_manager(db: Session, manager_id: int) -> List[dict]:
+    """Get feedback for manager with employee details"""
+    feedbacks = db.query(Feedback).filter(Feedback.manager_id == manager_id).order_by(Feedback.created_at.desc()).all()
+    
+    result = []
+    for feedback in feedbacks:
+        # Get employee details
+        employee = db.query(User).filter(User.id == feedback.employee_id).first()
+        
+        feedback_dict = {
+            "id": feedback.id,
+            "manager_id": feedback.manager_id,
+            "employee_id": feedback.employee_id,
+            "strengths": feedback.strengths,
+            "areas_to_improve": feedback.areas_to_improve,
+            "sentiment": feedback.sentiment,
+            "created_at": feedback.created_at,
+            "updated_at": feedback.updated_at,
+            "acknowledged": feedback.acknowledged,
+            "tags": feedback.tags,
+            "employee_name": employee.name if employee else "Unknown Employee",
+            "employee_email": employee.email if employee else "unknown@example.com"
+        }
+        result.append(feedback_dict)
+    
+    return result
 
 def update_feedback(db: Session, feedback: Feedback, feedback_in: FeedbackUpdate) -> Feedback:
     for field, value in feedback_in.dict(exclude_unset=True).items():
