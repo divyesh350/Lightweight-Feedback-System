@@ -1,4 +1,11 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom utility class for Pacifico font */
+.font-pacifico {
+  font-family: 'Pacifico', cursive;
+  color: rgb(79 70 229);
+}

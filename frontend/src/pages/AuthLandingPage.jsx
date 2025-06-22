@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import toast, { Toaster } from 'react-hot-toast';
-import { Card, CardActionArea, Typography, Box } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useAuthStore } from '../store/useAuthStore';
 import AuthModal from '../components/modals/AuthModal';
 
@@ -54,7 +54,7 @@ export default function AuthLandingPage() {
         transition={{ duration: 0.7 }}
         className="flex items-center mb-8 mt-4"
       >
-        <span className="text-4xl font-['Pacifico'] text-primary mr-2">GrowWise</span>
+        <span className="text-4xl font-pacifico mr-2">GrowWise</span>
       </motion.div>
       {/* Welcome Text */}
       <motion.div
@@ -77,17 +77,16 @@ export default function AuthLandingPage() {
             whileHover={{ scale: 1.05, rotate: i === 0 ? -2 : 2 }}
             className="w-full md:w-1/2"
           >
-            <CardActionArea onClick={() => handleCardClick(r.key)}>
-              <Card className={`rounded-2xl shadow-xl bg-white/70 p-8 flex flex-col items-center transition-all duration-200 cursor-pointer hover:shadow-2xl ${r.bg}`}
-                elevation={0}
-              >
-                <div className={`w-16 h-16 flex items-center justify-center rounded-full mb-4 ${r.bg}`}>
-                  <i className={`${r.icon} ${r.color} text-4xl`}></i>
-                </div>
-                <Typography variant="h6" className="font-semibold text-slate-800 mb-1">{r.title}</Typography>
-                <Typography variant="body2" className="text-slate-600 text-center">{r.desc}</Typography>
-              </Card>
-            </CardActionArea>
+            <div 
+              onClick={() => handleCardClick(r.key)}
+              className={`rounded-2xl shadow-xl bg-white/70 p-8 flex flex-col items-center transition-all duration-200 cursor-pointer hover:shadow-2xl ${r.bg} border border-gray-200/50`}
+            >
+              <div className={`w-16 h-16 flex items-center justify-center rounded-full mb-4 ${r.bg}`}>
+                <i className={`${r.icon} ${r.color} text-4xl`}></i>
+              </div>
+              <Typography variant="h6" className="font-semibold text-slate-800 mb-1">{r.title}</Typography>
+              <Typography variant="body2" className="text-slate-600 text-center">{r.desc}</Typography>
+            </div>
           </motion.div>
         ))}
       </div>
