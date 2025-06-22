@@ -3,7 +3,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AuthLandingPage from '../pages/AuthLandingPage';
 import ManagerDashboardPage from '../pages/ManagerDashboardPage';
 import ManagerFeedbackPage from '../pages/ManagerFeedbackPage';
+import TeamMembersPage from '../pages/TeamMembersPage';
 import EmployeeDashboardPage from '../pages/EmployeeDashboardPage';
+import EmployeeFeedbackPage from '../pages/EmployeeFeedbackPage';
+import ProtectedRoute from '../components/auth/ProtectedRoute';
 
 function NotFoundPage() {
   return <div className="flex items-center justify-center min-h-screen text-2xl">404 - Not Found</div>;
@@ -14,9 +17,38 @@ export default function AppRouter() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<AuthLandingPage />} />
-        <Route path="/dashboard/manager" element={<ManagerDashboardPage />} />
-        <Route path="/manager/feedback" element={<ManagerFeedbackPage />} />
-        <Route path="/dashboard/employee" element={<EmployeeDashboardPage />} />
+        <Route 
+          path="/dashboard/manager" 
+          element={
+            <ProtectedRoute requiredRole="manager">
+              <ManagerDashboardPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/manager/feedback" 
+          element={
+            <ProtectedRoute requiredRole="manager">
+              <ManagerFeedbackPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/team" 
+          element={
+            <ProtectedRoute requiredRole="manager">
+              <TeamMembersPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/dashboard/employee" 
+          element={
+            <ProtectedRoute requiredRole="employee">
+              <EmployeeDashboardPage />
+            </ProtectedRoute>
+          } 
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

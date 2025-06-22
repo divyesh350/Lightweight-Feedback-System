@@ -30,6 +30,7 @@ export default function FeedbackCard({
             }></i>
             <span>{sentimentLabel}</span>
           </div>
+
         </div>
         <div className="mt-4">
           <div className="mb-3">

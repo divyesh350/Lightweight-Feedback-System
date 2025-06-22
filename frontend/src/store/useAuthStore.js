@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { handleUnauthorized } from '../utils/authUtils';
 import * as authApi from '../api/authApi';
 
 export const useAuthStore = create(persist((set, get) => ({
@@ -51,7 +52,11 @@ export const useAuthStore = create(persist((set, get) => ({
     try {
       const { data } = await authApi.getMe();
       set({ user: data, loading: false });
-    } catch {
+    } catch (error) {
+      // If we get a 401, handle it properly
+      if (error.response?.status === 401) {
+        handleUnauthorized();
+      }
       set({ user: null, loading: false });
     }
   }

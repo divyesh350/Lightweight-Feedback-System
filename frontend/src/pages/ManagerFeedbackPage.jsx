@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Sidebar from '../components/layout/Sidebar';
 import Topbar from '../components/layout/Topbar';
 import MainContainer from '../components/layout/MainContainer';
 import DashboardHeader from '../components/layout/DashboardHeader';
 import FeedbackFormModal from '../components/modals/FeedbackFormModal';
+import Comments from '../components/feedback/Comments';
 import { useManagerDashboardStore } from '../store/useManagerDashboardStore';
-import { useAuthStore } from '../store/useAuthStore';
 
 function getToday() {
   return new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 export default function ManagerFeedbackPage() {
-  const navigate = useNavigate();
+
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [editingFeedback, setEditingFeedback] = useState(null);
-  const { user } = useAuthStore();
   const {
     recentFeedback,
     loading,
@@ -185,6 +183,9 @@ export default function ManagerFeedbackPage() {
                           {feedback.areas_to_improve}
                         </p>
                       </div>
+                      
+                      {/* Comments Section */}
+                      <Comments feedbackId={feedback.id} />
                       
                       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                         <div className="flex items-center space-x-4">
