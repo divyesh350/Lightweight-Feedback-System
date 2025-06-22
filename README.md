@@ -1,6 +1,6 @@
 # Feedback System
 
-A comprehensive feedback management system built with FastAPI backend and React frontend, featuring role-based access control, real-time dashboards, team management capabilities, and interactive comments.
+A comprehensive feedback management system built with FastAPI backend and React frontend, featuring role-based access control, real-time dashboards, team management capabilities, interactive comments, and advanced analytics.
 
 ## Features
 
@@ -21,6 +21,13 @@ A comprehensive feedback management system built with FastAPI backend and React 
   - Detailed member profiles with feedback history
   - Real-time data integration
 - **Comments**: View comments on feedback (read-only)
+- **Analytics Dashboard**: Advanced analytics with deep insights:
+  - Sentiment trends over time with line charts
+  - Employee performance comparison with bar charts
+  - Feedback distribution by sentiment, employee, and month
+  - Interactive filters for time range, employee, and chart type
+  - Key insights and metrics (avg. feedback/month, acknowledgment rates)
+  - Real-time data visualization
 
 ### Employee Features
 - View received feedback
@@ -70,12 +77,50 @@ A comprehensive feedback management system built with FastAPI backend and React 
 - `/dashboard/manager` - Manager dashboard
 - `/manager/feedback` - Feedback management page with comments (read-only)
 - `/team` - Team members page with detailed member profiles
+- `/analytics` - Advanced analytics dashboard with charts and insights
 
 ### Employee Routes
 - `/dashboard/employee` - Employee dashboard
 - `/feedback` - View received feedback with ability to add comments
 - `/feedback/requests` - Request feedback
 - `/peer-feedback` - Send peer feedback
+
+## Analytics Dashboard Features
+
+The Analytics page (`/analytics`) provides managers with comprehensive data visualization and insights:
+
+### Interactive Filters
+- **Time Range**: Filter data by 1 month, 3 months, 6 months, or 1 year
+- **Employee Filter**: View data for specific employees or all team members
+- **Chart Type**: Switch between sentiment, employee, and monthly distribution views
+
+### Key Insights Cards
+- **Total Feedback**: All-time feedback count with trend indicators
+- **This Month**: Current month feedback count
+- **Avg. per Month**: Average monthly feedback rate
+- **Positive Rate**: Percentage of positive feedback
+- **Acknowledgment Rate**: Percentage of acknowledged feedback
+- **Team Size**: Total number of team members
+
+### Chart Visualizations
+- **Sentiment Trends Chart**: Line chart showing sentiment distribution over time
+  - Positive, neutral, and negative sentiment trends
+  - Interactive time range selection
+  - Trend indicators and percentage changes
+- **Employee Performance Chart**: Bar charts showing individual performance metrics
+  - Feedback count, positive rate, and acknowledgment rate per employee
+  - Performance comparison across team members
+  - Individual employee filtering
+- **Feedback Distribution Chart**: Multiple chart types based on selection
+  - **By Sentiment**: Pie chart showing positive/neutral/negative distribution
+  - **By Employee**: Pie chart showing feedback distribution across team members
+  - **By Month**: Bar chart showing monthly feedback trends
+
+### Real-time Features
+- Auto-refresh functionality
+- Loading states and skeleton loaders
+- Error handling with toast notifications
+- Responsive design for all screen sizes
 
 ## Comments System
 
@@ -197,4 +242,5 @@ The system is designed with a modular architecture:
 - **Frontend**: Component-based architecture with reusable UI components
 - **State Management**: Centralized stores for different features
 - **Real-time Updates**: Auto-refresh functionality for dashboard data
-- **Comments System**: Interactive commenting with role-based permissions 
+- **Comments System**: Interactive commenting with role-based permissions
+- **Analytics**: Advanced data visualization with interactive charts and filters

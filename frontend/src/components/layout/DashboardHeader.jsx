@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export default function DashboardHeader({
   title = '',
@@ -10,6 +11,12 @@ export default function DashboardHeader({
   onTeamManagement = () => {},
   loading = false,
 }) {
+  const navigate = useNavigate();
+
+  const handleAnalytics = () => {
+    navigate('/analytics');
+  };
+
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
       <div>
@@ -28,6 +35,15 @@ export default function DashboardHeader({
             Manage Team
           </Button>
         )}
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          onClick={handleAnalytics}
+          startIcon={<i className="ri-bar-chart-line"></i>}
+        >
+          Analytics
+        </Button>
         {onRefresh && (
           <Button
             variant="outlined"
