@@ -34,10 +34,12 @@ export default function TeamMembersPage() {
   const {
     overview,
     recentFeedback,
+    teamMemberStats,
     loading: dashboardLoading,
     error: dashboardError,
     loadOverview,
     loadRecentFeedback,
+    loadTeamMemberStats,
     clearError: clearDashboardError,
   } = useManagerDashboardStore();
 
@@ -57,6 +59,17 @@ export default function TeamMembersPage() {
     
     loadData();
   }, [loadTeamMembers, loadOverview, loadRecentFeedback]);
+
+  // Load team member stats when team members are loaded
+  useEffect(() => {
+    if (teamMembers && teamMembers.length > 0) {
+      teamMembers.forEach(member => {
+        if (!teamMemberStats[member.id]) {
+          loadTeamMemberStats(member.id);
+        }
+      });
+    }
+  }, [teamMembers, loadTeamMemberStats, teamMemberStats]);
 
   // Handle errors
   useEffect(() => {
@@ -82,6 +95,10 @@ export default function TeamMembersPage() {
         loadOverview(),
         loadRecentFeedback(),
       ]);
+      // Re-fetch stats for all members
+      if (teamMembers && teamMembers.length > 0) {
+        await Promise.all(teamMembers.map(m => loadTeamMemberStats(m.id)));
+      }
       toast.success('Team data refreshed!');
     } catch (error) {
       console.error('Error refreshing data:', error);
@@ -126,7 +143,7 @@ export default function TeamMembersPage() {
   };
 
   // Check if any data is still loading
-  const isLoading = teamLoading.team || dashboardLoading.overview || dashboardLoading.feedback;
+  const isLoading = teamLoading.team || dashboardLoading.overview || dashboardLoading.feedback || dashboardLoading.memberStats;
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -228,6 +245,7 @@ export default function TeamMembersPage() {
                     member={member}
                     viewMode={viewMode}
                     feedbackCount={getMemberFeedbackCount(member.id)}
+                    satisfaction={teamMemberStats[member.id]?.satisfaction_score || 0}
                     progressBadge={getProgressBadge(member.id)}
                     onViewProfile={() => handleViewMember(member)}
                   />

@@ -9,12 +9,14 @@ export const useManagerDashboardStore = create((set, get) => ({
   teamMembers: [],
   recentFeedback: [],
   feedbackRequests: [],
+  teamMemberStats: {},
   loading: {
     overview: false,
     trends: false,
     team: false,
     feedback: false,
     requests: false,
+    memberStats: false,
   },
   error: null,
 
@@ -73,6 +75,28 @@ export const useManagerDashboardStore = create((set, get) => ({
       set({ 
         error: error.response?.data?.detail || 'Failed to load team members', 
         loading: { ...get().loading, team: false } 
+      });
+      throw error;
+    }
+  },
+
+  // Load stats for a specific team member
+  loadTeamMemberStats: async (memberId) => {
+    set({ loading: { ...get().loading, memberStats: true }, error: null });
+    try {
+      const { data } = await dashboardApi.getTeamMemberStats(memberId);
+      set((state) => ({
+        teamMemberStats: {
+          ...state.teamMemberStats,
+          [memberId]: data,
+        },
+        loading: { ...get().loading, memberStats: false },
+      }));
+      return data;
+    } catch (error) {
+      set({
+        error: error.response?.data?.detail || `Failed to load stats for member ${memberId}`,
+        loading: { ...get().loading, memberStats: false },
       });
       throw error;
     }

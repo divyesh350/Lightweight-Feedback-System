@@ -4,7 +4,8 @@ import { motion } from 'framer-motion';
 export default function TeamMemberCard({ 
   member, 
   viewMode, 
-  feedbackCount, 
+  feedbackCount,
+  satisfaction,
   progressBadge, 
   onViewProfile 
 }) {
@@ -33,14 +34,6 @@ export default function TeamMemberCard({
       case 'employee': return 'text-blue-600 bg-blue-50';
       default: return 'text-gray-600 bg-gray-50';
     }
-  };
-
-  // Calculate satisfaction percentage based on feedback count
-  const getSatisfactionPercentage = () => {
-    if (feedbackCount === 0) return 0;
-    // This would ideally come from the backend, but for now we'll use a placeholder
-    // In a real implementation, this would be calculated from actual feedback sentiment data
-    return Math.floor(Math.random() * 30) + 70; // 70-100% range
   };
 
   if (viewMode === 'list') {
@@ -77,6 +70,12 @@ export default function TeamMemberCard({
             <div className="text-right">
               <div className="text-sm font-medium text-gray-900">{feedbackCount}</div>
               <div className="text-xs text-gray-500">Feedback</div>
+            </div>
+            <div className="text-center p-3 bg-gray-50 rounded-lg">
+              <div className="text-lg font-semibold text-gray-900">
+                {satisfaction}%
+              </div>
+              <div className="text-xs text-gray-500">Satisfaction</div>
             </div>
             <span className={`px-3 py-1 rounded-full text-sm font-medium ${getBadgeColor(progressBadge?.color)}`}>
               {progressBadge?.label}
@@ -126,7 +125,7 @@ export default function TeamMemberCard({
         </div>
         <div className="text-center p-3 bg-gray-50 rounded-lg">
           <div className="text-lg font-semibold text-gray-900">
-            {getSatisfactionPercentage()}%
+            {satisfaction}%
           </div>
           <div className="text-xs text-gray-500">Satisfaction</div>
         </div>
