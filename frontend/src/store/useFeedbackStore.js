@@ -25,6 +25,18 @@ export const useFeedbackStore = create((set) => ({
   },
   createFeedback: async (payload) => feedbackApi.createFeedback(payload),
   updateFeedback: async (id, payload) => feedbackApi.updateFeedback(id, payload),
-  acknowledgeFeedback: async (id) => feedbackApi.acknowledgeFeedback(id),
+  acknowledgeFeedback: async (id) => {
+    try {
+      await feedbackApi.acknowledgeFeedback(id);
+      // Optimistically update the local state
+      set((state) => ({
+        feedbackList: state.feedbackList.map((fb) =>
+          fb.id === id ? { ...fb, acknowledged: true } : fb
+        ),
+      }));
+    } catch (error) {
+      set({ error: error.response?.data?.detail });
+    }
+  },
   exportPDF: async () => feedbackApi.exportEmployeeFeedbackPDF(),
 }));
