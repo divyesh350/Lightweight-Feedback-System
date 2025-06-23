@@ -6,7 +6,7 @@ import { useNotificationStore } from '../../store/useNotificationStore';
 import NotificationPanel from './NotificationPanel';
 // Optionally import MUI icons or use <i className="ri-*"></i> for RemixIcon
 
-export default function Topbar({ onRoleSwitch }) {
+export default function Topbar( ) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationPanelOpen, setNotificationPanelOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -16,7 +16,8 @@ export default function Topbar({ onRoleSwitch }) {
     notifications, 
     fetchNotifications, 
     markAsRead, 
-    getUnreadCount 
+    getUnreadCount,
+    clearAll
   } = useNotificationStore();
   const navigate = useNavigate();
 
@@ -75,9 +76,7 @@ export default function Topbar({ onRoleSwitch }) {
   };
 
   const handleClearAll = () => {
-    // This is a client-side clear for the demo. 
-    // A real app might have a "clear all" API endpoint.
-    useNotificationStore.setState({ notifications: [] });
+    clearAll();
     toast.success('Notifications cleared');
   };
 

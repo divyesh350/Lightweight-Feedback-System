@@ -22,8 +22,12 @@ export const useNotificationStore = create((set, get) => ({
   markAsRead: async (id) => {
     try {
       await notificationApi.markNotificationRead(id);
-      // Refresh the notifications list
-      await get().fetchNotifications();
+      // Update local state instead of re-fetching for a faster UI update
+      set((state) => ({
+        notifications: state.notifications.map((n) =>
+          n.id === id ? { ...n, read: true } : n
+        ),
+      }));
     } catch (error) {
       set({ 
         error: error.response?.data?.detail || 'Failed to mark notification as read'
@@ -31,7 +35,18 @@ export const useNotificationStore = create((set, get) => ({
     }
   },
 
+  clearAll: async () => {
+    try {
+      await notificationApi.clearAllNotifications();
+      set({ notifications: [] });
+    } catch (error) {
+      set({
+        error: error.response?.data?.detail || 'Failed to clear notifications'
+      });
+    }
+  },
+
   getUnreadCount: () => {
-    return get().notifications.filter(n => !n.is_read).length;
+    return get().notifications.filter(n => !n.read).length;
   }
 })); 

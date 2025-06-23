@@ -179,3 +179,8 @@ def mark_notification_as_read(db: Session, notification: Notification) -> Notifi
     db.commit()
     db.refresh(notification)
     return notification
+
+def delete_all_notifications_for_user(db: Session, user_id: int) -> int:
+    num_deleted = db.query(Notification).filter(Notification.user_id == user_id).delete()
+    db.commit()
+    return num_deleted

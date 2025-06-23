@@ -8,7 +8,7 @@ const NotificationPanel = ({
   onMarkAllAsRead,
   onClearAll,
 }) => {
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
     <AnimatePresence>
@@ -55,12 +55,12 @@ const NotificationPanel = ({
                 <li
                   key={notification.id}
                   className={`border-b border-gray-100 p-4 ${
-                    notification.is_read ? 'bg-white' : 'bg-blue-50'
+                    notification.read ? 'bg-white' : 'bg-blue-50'
                   }`}
                 >
                   <div className="flex items-start space-x-3">
                     <div className="flex-shrink-0">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${notification.is_read ? 'bg-gray-200 text-gray-500' : 'bg-primary text-white'}`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${notification.read ? 'bg-gray-200 text-gray-500' : 'bg-primary text-white'}`}>
                         <i className="ri-chat-1-line"></i>
                       </div>
                     </div>
@@ -70,7 +70,7 @@ const NotificationPanel = ({
                         {new Date(notification.created_at).toLocaleString()}
                       </span>
                     </div>
-                    {!notification.is_read && (
+                    {!notification.read && (
                       <button
                         onClick={() => onMarkAsRead(notification.id)}
                         className="p-1 rounded-full hover:bg-gray-200"

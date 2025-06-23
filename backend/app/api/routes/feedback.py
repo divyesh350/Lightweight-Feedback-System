@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
 from ...api.deps import get_db, get_current_user, require_role
 from ...models.user import User, UserRole
-from ...models.feedback import Feedback
+from ...models.feedback import Feedback, Notification
 from ...schemas.feedback import FeedbackCreate, FeedbackRead, FeedbackReadWithEmployee, FeedbackUpdate, FeedbackRequestCreate, FeedbackRequestRead, FeedbackRequestStatus, PeerFeedbackCreate, PeerFeedbackRead, FeedbackCommentCreate, FeedbackCommentRead, TagCreate, TagRead, NotificationRead, NotificationCreate
 from ...crud import crud_feedback
 from ...crud.crud_feedback import (
@@ -22,7 +22,8 @@ from ...crud.crud_feedback import (
     remove_tag_from_feedback,
     get_notifications_for_user,
     mark_notification_as_read,
-    create_notification
+    create_notification,
+    delete_all_notifications_for_user
 )
 from typing import List
 from ...core.config import send_email_background
@@ -238,6 +239,14 @@ def mark_notification_read(
     if not notification:
         raise HTTPException(status_code=404, detail="Notification not found")
     return mark_notification_as_read(db, notification)
+
+@router.delete("/notifications/clear-all", status_code=status.HTTP_200_OK)
+def clear_all_notifications(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    num_deleted = delete_all_notifications_for_user(db, user_id=current_user.id)
+    return {"message": f"Successfully deleted {num_deleted} notifications."}
 
 @router.get("/employee/pdf")
 def export_feedback_pdf(
