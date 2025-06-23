@@ -2,19 +2,37 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useNotificationStore } from '../../store/useNotificationStore';
+import NotificationPanel from './NotificationPanel';
 // Optionally import MUI icons or use <i className="ri-*"></i> for RemixIcon
 
-export default function Topbar({ notifications = 0, onRoleSwitch }) {
+export default function Topbar({ onRoleSwitch }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [notificationPanelOpen, setNotificationPanelOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const notificationRef = useRef(null);
   const { user, role, logout } = useAuthStore();
+  const { 
+    notifications, 
+    fetchNotifications, 
+    markAsRead, 
+    getUnreadCount 
+  } = useNotificationStore();
   const navigate = useNavigate();
 
-  // Close dropdown when clicking outside
+  // Fetch notifications on mount
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
+
+  // Close dropdown/panel when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
+      }
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setNotificationPanelOpen(false);
       }
     };
 
@@ -41,6 +59,28 @@ export default function Topbar({ notifications = 0, onRoleSwitch }) {
     return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
   };
 
+  const unreadCount = getUnreadCount();
+
+  const handleMarkAsRead = (id) => {
+    markAsRead(id);
+    // Optionally close panel or just let the number update
+  };
+
+  const handleMarkAllAsRead = () => {
+    notifications.forEach(n => {
+      if (!n.is_read) {
+        markAsRead(n.id);
+      }
+    });
+  };
+
+  const handleClearAll = () => {
+    // This is a client-side clear for the demo. 
+    // A real app might have a "clear all" API endpoint.
+    useNotificationStore.setState({ notifications: [] });
+    toast.success('Notifications cleared');
+  };
+
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6 fixed top-0 left-0 right-0 z-30">
       <div className="flex items-center">
@@ -52,13 +92,25 @@ export default function Topbar({ notifications = 0, onRoleSwitch }) {
         </div>
       </div>
       <div className="flex items-center space-x-4">
-        <div className="relative dropdown">
-          <div className="w-10 h-10 flex items-center justify-center text-gray-600 cursor-pointer">
+        <div className="relative dropdown" ref={notificationRef}>
+          <div 
+            className="w-10 h-10 flex items-center justify-center text-gray-600 cursor-pointer"
+            onClick={() => setNotificationPanelOpen(!notificationPanelOpen)}
+          >
             <i className="ri-notification-3-line ri-lg"></i>
-            {notifications > 0 && (
-              <span className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{notifications}</span>
+            {unreadCount > 0 && (
+              <span className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{unreadCount}</span>
             )}
           </div>
+          {notificationPanelOpen && (
+            <NotificationPanel
+              notifications={notifications}
+              onClose={() => setNotificationPanelOpen(false)}
+              onMarkAsRead={handleMarkAsRead}
+              onMarkAllAsRead={handleMarkAllAsRead}
+              onClearAll={handleClearAll}
+            />
+          )}
         </div>
         <div className="relative" ref={dropdownRef}>
           <div 
