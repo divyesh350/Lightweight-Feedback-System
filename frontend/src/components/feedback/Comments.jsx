@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { Button, TextField, Box, IconButton } from '@mui/material';
 import { useCommentsStore } from '../../store/useCommentsStore';
 import { useAuthStore } from '../../store/useAuthStore';
 
@@ -47,6 +48,27 @@ export default function Comments({ feedbackId }) {
       toast.success('Comment added successfully!');
     } catch (error) {
       console.error('Error creating comment:', error);
+      toast.error('Failed to add comment. Please try again.');
+    }
+  };
+
+  const handleSendComment = async () => {
+    if (!newComment.trim() || !canAddComments) return;
+
+    try {
+      await createComment(feedbackId, newComment.trim());
+      setNewComment('');
+      toast.success('Comment sent successfully!');
+    } catch (error) {
+      console.error('Error creating comment:', error);
+      toast.error('Failed to send comment. Please try again.');
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendComment();
     }
   };
 
@@ -102,34 +124,50 @@ export default function Comments({ feedbackId }) {
                     <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">
                       Add a comment
                     </label>
-                    <textarea
+                    <TextField
                       id="comment"
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
+                      onKeyPress={handleKeyPress}
                       placeholder="Share your thoughts on this feedback..."
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                      rows="3"
+                      multiline
+                      rows={3}
+                      variant="outlined"
+                      fullWidth
                       disabled={loading.create}
+                      className="mb-3"
+                      InputProps={{
+                        style: { 
+                          backgroundColor: 'white',
+                          borderRadius: '8px'
+                        }
+                      }}
                     />
                   </div>
-                  <div className="flex justify-end">
-                    <button
-                      type="submit"
+                  <div className="flex justify-end space-x-2">
+                    <Button
+                      variant="outlined"
+                      onClick={() => setNewComment('')}
                       disabled={!newComment.trim() || loading.create}
-                      className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                      className="px-4 py-2"
                     >
-                      {loading.create ? (
-                        <>
-                          <i className="ri-loader-4-line animate-spin mr-2"></i>
-                          Adding...
-                        </>
-                      ) : (
-                        <>
-                          <i className="ri-send-plane-line mr-2"></i>
-                          Add Comment
-                        </>
-                      )}
-                    </button>
+                      Clear
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={handleSendComment}
+                      disabled={!newComment.trim() || loading.create}
+                      className="px-6 py-2 bg-blue-600 hover:bg-blue-700"
+                      startIcon={
+                        loading.create ? (
+                          <i className="ri-loader-4-line animate-spin"></i>
+                        ) : (
+                          <i className="ri-send-plane-fill"></i>
+                        )
+                      }
+                    >
+                      {loading.create ? 'Sending...' : 'Send Comment'}
+                    </Button>
                   </div>
                 </form>
               </div>
@@ -178,14 +216,14 @@ export default function Comments({ feedbackId }) {
                       <div className="flex items-start space-x-3">
                         {/* User Avatar */}
                         <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
-                          {getUserInitials(user?.name || 'User')}
+                          {getUserInitials(comment.user_name || user?.name || 'User')}
                         </div>
                         
                         {/* Comment Content */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-sm font-medium text-gray-900">
-                              {user?.name || 'User'}
+                              {comment.user_name || user?.name || 'User'}
                             </span>
                             <span className="text-xs text-gray-500">
                               {formatDate(comment.created_at)}

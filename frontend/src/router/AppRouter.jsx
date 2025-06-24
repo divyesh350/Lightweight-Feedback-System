@@ -6,6 +6,7 @@ import ManagerFeedbackPage from '../pages/ManagerFeedbackPage';
 import TeamMembersPage from '../pages/TeamMembersPage';
 import AnalyticsPage from '../pages/AnalyticsPage';
 import EmployeeDashboardPage from '../pages/EmployeeDashboardPage';
+import EmployeeFeedbackPage from '../pages/EmployeeFeedbackPage';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 
 function NotFoundPage() {
@@ -54,6 +55,14 @@ export default function AppRouter() {
           element={
             <ProtectedRoute requiredRole="employee">
               <EmployeeDashboardPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/employee/feedback" 
+          element={
+            <ProtectedRoute requiredRole="employee">
+              <EmployeeFeedbackPage />
             </ProtectedRoute>
           } 
         />

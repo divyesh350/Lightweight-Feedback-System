@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import Topbar from '../components/layout/Topbar';
 import MainContainer from '../components/layout/MainContainer';
@@ -6,14 +6,11 @@ import FeedbackTimeline from '../components/feedback/FeedbackTimeline';
 import ActionsPanel from '../components/feedback/ActionsPanel';
 import PendingRequestCard from '../components/feedback/PendingRequestCard';
 import FeedbackSummaryChart from '../components/charts/FeedbackSummaryChart';
+import FeedbackRequestModal from '../components/modals/FeedbackRequestModal';
 import { useFeedbackStore } from '../store/useFeedbackStore';
+import { useFeedbackRequestStore } from '../store/useFeedbackRequestStore';
 
 const mockUser = { name: 'David Mitchell', role: 'Employee', avatar: '' };
-
-const pendingRequests = [
-  { title: 'Project Feedback', status: 'pending', managerName: 'Sarah Johnson', date: 'June 15, 2025' },
-  { title: 'Quarterly Review', status: 'inprogress', managerName: 'Michael Chen', date: 'June 1, 2025' },
-];
 
 const summaryChartData = [
   { month: 'Jan', Design: 3.8, Communication: 3.2, Collaboration: 4.0 },
@@ -25,11 +22,37 @@ const summaryChartData = [
 ];
 
 export default function EmployeeDashboardPage() {
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [showRequestsList, setShowRequestsList] = useState(false);
+  
   const { feedbackList, loading, loadEmployeeFeedback, acknowledgeFeedback } = useFeedbackStore();
+  const { requestsMade, loadRequestsMade, loading: { requestsMade: requestsLoading } } = useFeedbackRequestStore();
 
   useEffect(() => {
     loadEmployeeFeedback();
-  }, [loadEmployeeFeedback]);
+    loadRequestsMade();
+  }, [loadEmployeeFeedback, loadRequestsMade]);
+
+  const handleRequestFeedback = () => {
+    setShowRequestModal(true);
+  };
+
+  const handleViewPendingRequests = () => {
+    setShowRequestsList(!showRequestsList);
+  };
+
+  const handleExportFeedback = () => {
+    // TODO: Implement PDF export functionality
+    console.log('Export feedback to PDF');
+  };
+
+  const handleRequestSuccess = () => {
+    // Refresh the requests list
+    loadRequestsMade();
+  };
+
+  // Get the most recent 3 requests for the sidebar
+  const recentRequests = requestsMade.slice(0, 3);
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -44,6 +67,9 @@ export default function EmployeeDashboardPage() {
                 <h1 className="text-2xl font-semibold text-gray-900">Feedback Dashboard</h1>
                 <p className="text-gray-600 mt-1">View and manage your performance feedback</p>
               </div>
+              
+             
+              
               <div className="bg-white rounded-lg shadow-sm p-5 mb-6">
                 <FeedbackTimeline
                   feedbackList={feedbackList}
@@ -52,15 +78,38 @@ export default function EmployeeDashboardPage() {
                 {loading && <div>Loading...</div>}
               </div>
             </div>
+            
             {/* Actions Panel */}
             <div className="lg:w-4/12">
-              <ActionsPanel onRequest={() => {}} onViewPending={() => {}} onExport={() => {}} />
-              <h3 className="text-sm font-medium text-gray-900 mb-3">Pending Requests</h3>
-              <div className="space-y-3">
-                {pendingRequests.map((req, i) => (
-                  <PendingRequestCard key={i} {...req} />
-                ))}
+              <ActionsPanel 
+                onRequest={handleRequestFeedback} 
+                onViewPending={handleViewPendingRequests} 
+                onExport={handleExportFeedback}
+                showRequestsList={showRequestsList}
+              />
+              
+              {/* Recent Requests Section */}
+              <div className="mb-6">
+                <h3 className="text-sm font-medium text-gray-900 mb-3">Recent Requests</h3>
+                {requestsLoading ? (
+                  <div className="text-center py-4">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="text-xs text-gray-500 mt-2">Loading requests...</p>
+                  </div>
+                ) : recentRequests.length > 0 ? (
+                  <div className="space-y-2">
+                    {recentRequests.map((request) => (
+                      <PendingRequestCard key={request.id} request={request} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4">
+                    <i className="ri-inbox-line text-2xl text-gray-400 mb-2"></i>
+                    <p className="text-xs text-gray-500">No requests yet</p>
+                  </div>
+                )}
               </div>
+              
               <div className="mt-6">
                 <h3 className="text-sm font-medium text-gray-900 mb-3">Feedback Summary</h3>
                 <FeedbackSummaryChart data={summaryChartData} />
@@ -69,6 +118,13 @@ export default function EmployeeDashboardPage() {
           </div>
         </MainContainer>
       </div>
+
+      {/* Feedback Request Modal */}
+      <FeedbackRequestModal
+        open={showRequestModal}
+        onClose={() => setShowRequestModal(false)}
+        onSuccess={handleRequestSuccess}
+      />
     </div>
   );
 } 

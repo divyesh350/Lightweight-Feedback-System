@@ -14,7 +14,7 @@ const navItems = {
   ],
   employee: [
     { to: '/dashboard/employee', icon: 'ri-dashboard-line', label: 'Dashboard' },
-    { to: '/feedback', icon: 'ri-feedback-line', label: 'My Feedback' },
+    { to: '/employee/feedback', icon: 'ri-feedback-line', label: 'My Feedback' },
     { to: '/feedback/requests', icon: 'ri-add-circle-line', label: 'Request Feedback' },
     { to: '/peer-feedback', icon: 'ri-team-line', label: 'Peer Feedback' },
     { to: '/export', icon: 'ri-file-pdf-line', label: 'Export PDF' },

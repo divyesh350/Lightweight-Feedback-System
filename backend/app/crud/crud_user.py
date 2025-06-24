@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from ..models.user import User
+from ..models.user import User, UserRole
 from ..schemas.user import UserCreate
 from ..core.security import get_password_hash, verify_password
 
@@ -45,9 +45,13 @@ def get_team_members(db: Session, manager_id: int):
 def get_available_employees(db: Session):
     """Get all employees who are not assigned to any manager"""
     return db.query(User).filter(
-        User.role == "employee",
+        User.role == UserRole.employee,
         User.manager_id.is_(None)
     ).all()
+
+def get_managers(db: Session):
+    """Get all managers that can be requested for feedback"""
+    return db.query(User).filter(User.role == UserRole.manager).all()
 
 def assign_employee_to_manager(db: Session, employee_id: int, manager_id: int):
     """Assign an employee to a manager"""

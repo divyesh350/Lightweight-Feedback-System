@@ -13,6 +13,12 @@ router = APIRouter(prefix="/api/users", tags=["users"])
 def get_current_user_info(current_user: User = Depends(get_current_user)):
     return current_user
 
+@router.get("/managers", response_model=List[UserRead])
+def get_managers(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Get all managers that can be requested for feedback"""
+    managers = crud_user.get_managers(db)
+    return managers
+
 @router.get("/team", response_model=List[UserRead])
 def get_team_members(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     """Get all team members for the current manager"""

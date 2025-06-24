@@ -22,6 +22,7 @@ function getToday() {
 export default function ManagerDashboardPage() {
   const navigate = useNavigate();
   const [teamModalOpen, setTeamModalOpen] = useState(false);
+  const { role } = useAuthStore();
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const {
     sentimentTrends,
@@ -144,6 +145,7 @@ export default function ManagerDashboardPage() {
           {/* Recent Feedback Section */}
           <RecentFeedbackSection 
             feedback={recentFeedback}
+            role={role}
             loading={loading.feedback}
             onViewAll={handleViewAllFeedback}
           />

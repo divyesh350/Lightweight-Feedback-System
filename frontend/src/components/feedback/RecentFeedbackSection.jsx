@@ -1,7 +1,8 @@
 import React from 'react';
 import FeedbackCard from './FeedbackCard';
+import Comments from './Comments';
 
-const RecentFeedbackSection = ({ feedback, loading, onViewAll }) => {
+const RecentFeedbackSection = ({ feedback, loading, onViewAll, role }) => {
   if (loading) {
     return (
       <div>
@@ -59,25 +60,82 @@ const RecentFeedbackSection = ({ feedback, loading, onViewAll }) => {
       </div>
       <div className="space-y-4">
         {feedback.slice(0, 5).map((fb, i) => (
-          <FeedbackCard 
-            key={fb.id || i} 
-            {...fb}
-            avatar={fb.employee?.avatar || ''}
-            name={fb.employee_name || 'Unknown Employee'}
-            role={fb.role || 'Employee'}
-            date={new Date(fb.created_at).toLocaleDateString('en-US', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-            sentiment={fb.sentiment}
-            sentimentLabel={fb.sentiment?.charAt(0).toUpperCase() + fb.sentiment?.slice(1)}
-            strengths={fb.strengths ? [fb.strengths] : []}
-            improvements={fb.areas_to_improve ? [fb.areas_to_improve] : []}
-            tags={fb.tags || []}
-            commentsCount={fb.comments_count || 0}
-            acknowledged={fb.acknowledged || false}
-          />
+          <div key={fb.id || i} className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center">
+                  <i className="ri-user-line"></i>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">
+                    {fb.employee_name || 'Employee'}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {fb.employee_email || 'employee@example.com'}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  fb.sentiment === 'positive'
+                    ? 'text-green-600 bg-green-50'
+                    : fb.sentiment === 'neutral'
+                    ? 'text-yellow-600 bg-yellow-50'
+                    : fb.sentiment === 'negative'
+                    ? 'text-red-600 bg-red-50'
+                    : 'text-gray-600 bg-gray-50'
+                }`}>
+                  <i className={`${
+                    fb.sentiment === 'positive'
+                      ? 'ri-emotion-happy-line'
+                      : fb.sentiment === 'neutral'
+                      ? 'ri-emotion-normal-line'
+                      : fb.sentiment === 'negative'
+                      ? 'ri-emotion-unhappy-line'
+                      : 'ri-emotion-line'
+                  } mr-1`}></i>
+                  {fb.sentiment}
+                </span>
+                <span className="text-sm text-gray-500">
+                  {new Date(fb.created_at).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </span>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium text-gray-900 mb-2">Strengths</h4>
+                <p className="text-gray-700 bg-green-50 p-3 rounded-lg">
+                  {fb.strengths}
+                </p>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 mb-2">Areas to Improve</h4>
+                <p className="text-gray-700 bg-yellow-50 p-3 rounded-lg">
+                  {fb.areas_to_improve}
+                </p>
+              </div>
+              {/* Comments Section */}
+              <Comments feedbackId={fb.id} />
+              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm text-gray-500">
+                    <i className="ri-time-line mr-1"></i>
+                    {fb.acknowledged ? 'Acknowledged' : 'Pending acknowledgment'}
+                  </span>
+                </div>
+                {fb.acknowledged && (
+                  <span className="text-sm text-green-600">
+                    <i className="ri-check-line mr-1"></i>
+                    Acknowledged
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     </div>
