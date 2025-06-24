@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
+from starlette_proxy_headers.middleware import ProxyHeadersMiddleware
 from .api.routes import auth, users, feedback, dashboard
 from .models import user, feedback as feedback_model
 from .db.base import Base
