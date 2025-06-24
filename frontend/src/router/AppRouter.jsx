@@ -7,6 +7,7 @@ import TeamMembersPage from '../pages/TeamMembersPage';
 import AnalyticsPage from '../pages/AnalyticsPage';
 import EmployeeDashboardPage from '../pages/EmployeeDashboardPage';
 import EmployeeFeedbackPage from '../pages/EmployeeFeedbackPage';
+import PeerFeedbackPage from '../pages/PeerFeedbackPage';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 
 function NotFoundPage() {
@@ -66,6 +67,15 @@ export default function AppRouter() {
             </ProtectedRoute>
           } 
         />
+        <Route 
+          path="/peer-feedback" 
+          element={
+            <ProtectedRoute requiredRole="employee">
+              <PeerFeedbackPage />
+            </ProtectedRoute>
+          } 
+        />
+      
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

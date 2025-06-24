@@ -83,3 +83,9 @@ def remove_team_member(
     # Remove employee from team
     crud_user.remove_employee_from_manager(db, employee_id=employee_id)
     return {"message": "Employee removed from team successfully"}
+
+@router.get("/all", response_model=List[UserRead])
+def get_all_users(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Get all users (for peer feedback selection)"""
+    users = crud_user.get_users(db)
+    return users
