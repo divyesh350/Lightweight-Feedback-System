@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
 from .api.routes import auth, users, feedback, dashboard
 from .models import user, feedback as feedback_model
 from .db.base import Base
@@ -9,6 +10,9 @@ from .db.session import engine
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Feedback System API")
+
+# Add ProxyHeadersMiddleware to trust X-Forwarded-Proto and similar headers
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 
 # Add CORS middleware
 app.add_middleware(
