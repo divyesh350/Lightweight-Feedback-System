@@ -2,7 +2,7 @@ import axios from 'axios';
 import { handleUnauthorized } from '../utils/authUtils';
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://feedback-backend-system-production.up.railway.app/api',
 });
 
 instance.interceptors.request.use(config => {
