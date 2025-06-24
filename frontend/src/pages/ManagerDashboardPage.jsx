@@ -76,9 +76,6 @@ export default function ManagerDashboardPage() {
     }));
   };
 
-  const handleExport = () => {
-    toast.info('Export feature coming soon!');
-  };
 
   const handleNewFeedback = () => {
     setFeedbackModalOpen(true);
@@ -115,7 +112,6 @@ export default function ManagerDashboardPage() {
           <DashboardHeader
             title="Manager Dashboard"
             date={getToday()}
-            onExport={handleExport}
             onNewFeedback={handleNewFeedback}
             onRefresh={handleRefresh}
             onTeamManagement={handleTeamManagement}

@@ -9,6 +9,7 @@ import FeedbackSummaryChart from '../components/charts/FeedbackSummaryChart';
 import FeedbackRequestModal from '../components/modals/FeedbackRequestModal';
 import { useFeedbackStore } from '../store/useFeedbackStore';
 import { useFeedbackRequestStore } from '../store/useFeedbackRequestStore';
+import { saveAs } from 'file-saver';
 
 const mockUser = { name: 'David Mitchell', role: 'Employee', avatar: '' };
 
@@ -24,8 +25,9 @@ const summaryChartData = [
 export default function EmployeeDashboardPage() {
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showRequestsList, setShowRequestsList] = useState(false);
+  const [exporting, setExporting] = useState(false);
   
-  const { feedbackList, loading, loadEmployeeFeedback, acknowledgeFeedback } = useFeedbackStore();
+  const { feedbackList, loading, loadEmployeeFeedback, acknowledgeFeedback, exportPDF } = useFeedbackStore();
   const { requestsMade, loadRequestsMade, loading: { requestsMade: requestsLoading } } = useFeedbackRequestStore();
 
   useEffect(() => {
@@ -41,9 +43,17 @@ export default function EmployeeDashboardPage() {
     setShowRequestsList(!showRequestsList);
   };
 
-  const handleExportFeedback = () => {
-    // TODO: Implement PDF export functionality
-    console.log('Export feedback to PDF');
+  const handleExportFeedback = async () => {
+    setExporting(true);
+    try {
+      const response = await exportPDF();
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      saveAs(blob, 'my_feedback.pdf');
+    } catch (error) {
+      alert('Failed to export PDF.');
+    } finally {
+      setExporting(false);
+    }
   };
 
   const handleRequestSuccess = () => {

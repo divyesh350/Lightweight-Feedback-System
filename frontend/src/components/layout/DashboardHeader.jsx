@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 export default function DashboardHeader({
   title = '',
   date = '',
-  onExport = () => {},
   onNewFeedback = () => {},
   onRefresh = () => {},
   onTeamManagement = () => {},
@@ -54,17 +53,6 @@ export default function DashboardHeader({
             startIcon={loading ? <i className="ri-loader-4-line animate-spin"></i> : <i className="ri-refresh-line"></i>}
           >
             Refresh
-          </Button>
-        )}
-        {onExport && (
-          <Button
-            variant="outlined"
-            color="primary"
-            size="small"
-            onClick={onExport}
-            startIcon={<i className="ri-download-line"></i>}
-          >
-            Export
           </Button>
         )}
         {onNewFeedback && (
