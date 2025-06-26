@@ -196,6 +196,27 @@ Check out the live project here: [https://lightweight-feedback-system-kappa.verc
 ## ▶️ Getting Started
 
 ### Backend Setup
+
+#### Option 1: Run with Docker
+
+You can quickly run the backend using the published Docker image:
+
+```bash
+docker run -d \
+  -e DATABASE_URL=your_postgres_url \
+  -e JWT_SECRET=your_jwt_secret \
+  -p 8000:8000 \
+  divyesh94/feedback-backend-system:latest
+```
+
+Replace `your_postgres_url` and `your_jwt_secret` with your actual environment values.
+
+The backend will be available at `http://localhost:8000`.
+
+---
+
+#### Option 2: Run Locally
+
 1. Navigate to the backend directory:
    ```bash
    cd backend
