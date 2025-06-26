@@ -1,8 +1,28 @@
 # Feedback System
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Open-green?style=for-the-badge&logo=vercel)](https://lightweight-feedback-system-kappa.vercel.app/)
+
 A comprehensive feedback management system with a FastAPI backend and a modern React frontend. Features include role-based dashboards, team management, interactive comments, peer feedback, analytics, and PDF export.
 
 ---
+
+## 📺 Live Demo
+
+Check out the live project here: [https://lightweight-feedback-system-kappa.vercel.app/](https://lightweight-feedback-system-kappa.vercel.app/)
+
+---
+
+## 📑 Table of Contents
+- [Features](#-features)
+- [Main UI Sections (Frontend)](#-main-ui-sections-frontend)
+- [API Endpoints (Backend)](#-api-endpoints-backend)
+- [Database Schema (Backend)](#-database-schema-backend)
+- [Technologies Used](#-technologies-used)
+- [Stack and Design Decisions](#-stack-and-design-decisions)
+- [Getting Started](#-getting-started)
+- [Architecture & Extensibility](#-architecture--extensibility)
+- [Contributing & Development](#-contributing--development)
+- [Contact](#-contact)
 
 ## 🚀 Features
 
@@ -154,21 +174,60 @@ A comprehensive feedback management system with a FastAPI backend and a modern R
 
 ---
 
+## 🧩 Stack and Design Decisions
+
+### Stack
+- **Frontend:** React, Vite, Zustand, MUI, TailwindCSS, Axios, React Router DOM, Framer Motion, React Hot Toast, React Markdown, Recharts, File Saver, ESLint
+- **Backend:** FastAPI, SQLAlchemy, PostgreSQL, JWT Authentication, Pydantic, FPDF
+
+### Design Decisions
+- **Separation of Concerns:** Clear separation between backend (API, business logic, DB) and frontend (UI, state, API calls).
+- **Role-Based Access:** All routes and UI are protected and rendered based on user roles (manager/employee).
+- **State Management:** Zustand is used for global state in the frontend for simplicity and performance.
+- **UI/UX:** Combination of MUI and TailwindCSS for a modern, responsive, and accessible interface.
+- **Extensibility:** Modular code structure in both backend and frontend to allow easy addition of new features.
+- **Security:** JWT authentication, hashed passwords, and protected API endpoints.
+- **Analytics:** Real-time analytics and charts for actionable insights.
+- **PDF Export:** Employees can export their feedback as PDF using FPDF and File Saver.
+- **Notifications:** Real-time toast notifications and notification center for user actions.
+
+---
+
 ## ▶️ Getting Started
 
 ### Backend Setup
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Set up your PostgreSQL database and update the database URL in your environment variables or config.
+4. Run the FastAPI server:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
 
 ### Frontend Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+4. The app will be available at `http://localhost:5173` by default.
+
+### Environment Variables
+- **Backend:** Configure your database URL and JWT secret in a `.env` file in the backend directory.
+- **Frontend:** If needed, set API base URLs in a `.env` file in the frontend directory.
 
 ---
 
